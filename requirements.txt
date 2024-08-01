@@ -3,3 +3,4 @@ langchain_community
 langchain_chroma
 langchainhub
 langchain-openai
+Flask
