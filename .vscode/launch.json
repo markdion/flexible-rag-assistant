@@ -22,6 +22,14 @@
         ],
         "cwd": "${workspaceFolder}",
         "jinja": true
+    },
+    {
+      "name": "React App",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/rag_demo/frontend/react-app/node_modules/.bin/react-scripts",
+      "args": ["start"],
+      "cwd": "${workspaceFolder}/rag_demo/frontend/react-app"
     }
   ]
 }
