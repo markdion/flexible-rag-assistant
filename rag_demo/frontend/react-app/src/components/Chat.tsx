@@ -3,25 +3,38 @@ import axiosInstance from '../api/chatApi';
 import { AxiosResponse } from 'axios';
 
 interface ChatMessage {
-  type: string;
+  type: 'Human' | 'AI';
   content: string;
 }
 
 function Chat(): JSX.Element {
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [prompt, setPrompt] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
     // Send chat message to backend
     axiosInstance.post('/chat', { prompt })
-      .then((response: AxiosResponse<ChatMessage>) => {
-        setChatHistory([...chatHistory, response.data]);
+      .then((response: AxiosResponse<string>) => {
+        const newPrompt: ChatMessage = {
+          type: 'Human',
+          content: prompt,
+        };
+        const newResponse: ChatMessage = {
+          type: 'AI',
+          content: response.data,
+        };
+        setChatHistory([...chatHistory, newPrompt, newResponse]);
         setPrompt('');
       })
       .catch((error: Error) => {
         console.error(error);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -30,18 +43,27 @@ function Chat(): JSX.Element {
       <h1>Chat</h1>
       <div>
         {chatHistory.map((message, index) => (
-          <div key={index}>
+          <div key={index} className={message.type}>
             <strong>{message.type}:</strong> {message.content}
           </div>
         ))}
       </div>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="prompt">Prompt:</label>
-        <input type="text" id="prompt" name="prompt" value={prompt} onChange={(e) => setPrompt(e.target.value)} />
+        <input
+          type="text"
+          id="prompt"
+          name="prompt"
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          disabled={loading}
+        />
         <br />
         <br />
-        <input type="submit" value="Send" />
+        <button type="submit" disabled={loading}>
+          Send
+        </button>
       </form>
+      {loading && <div className="spinner">Loading...</div>}
     </div>
   );
 }
