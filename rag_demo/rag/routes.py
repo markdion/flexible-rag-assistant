@@ -43,8 +43,25 @@ def chat():
   chat_history.extend([HumanMessage(content=prompt), AIMessage(content=ai_msg["answer"])])
   session["chat_history"] = [message_to_dict(msg) for msg in chat_history]
 
+  # Extract relevant document information
+  documents = ai_msg.get("context", [])
+  formatted_documents = [
+      {
+        "source": doc.metadata["source"],
+        "title": doc.metadata["title"],
+        "description": doc.metadata["description"],
+        "page_content": doc.page_content
+      }
+      for doc in documents
+  ]
+
+  response_data = {
+    "answer": ai_msg["answer"],
+    "context": formatted_documents
+  }
+
   print(ai_msg["answer"])
-  return make_response(ai_msg["answer"], 200)
+  return make_response(response_data, 200)
   
 @rag_bp.route('/reset', methods=['POST'])
 def reset():
