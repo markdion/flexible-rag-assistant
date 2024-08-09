@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axiosInstance from '../api/chatApi';
 import { AxiosResponse } from 'axios';
-import { Box, Button, Grid, LinearProgress, Paper, TextField, Typography } from '@mui/material';
+import { Box, Grid, IconButton, LinearProgress, Paper, TextField, Typography } from '@mui/material';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 
 interface Context {
   source: string;
@@ -68,6 +69,8 @@ function Chat(): JSX.Element {
       <Typography variant="h4" gutterBottom>Chat</Typography>
       <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, minHeight: 0 }}>
         <Paper
+          elevation={0}
+          variant='outlined'
           sx={{
             display: 'flex',
             flexDirection: 'column',
@@ -98,6 +101,7 @@ function Chat(): JSX.Element {
                 title={message.type === 'AI' && message.context ? message.context.map(ctx => ctx.page_content).join(' | ') : ''}
                 >
                 <Paper
+                  elevation={0}
                   sx={{
                     p: 1,
                     maxWidth: '70%',
@@ -131,9 +135,18 @@ function Chat(): JSX.Element {
             />
           </Grid>
           <Grid item>
-            <Button type="submit" variant="contained" color="primary" disabled={loading}>
-              Send
-            </Button>
+          <IconButton
+            type="submit"
+            sx={{
+              width: 56,
+              height: 56,
+              backgroundColor: 'primary.main',
+              color: 'primary.contrastText',
+              borderRadius: '10%',
+            }}
+          >
+            <ArrowUpwardIcon />
+          </IconButton>
           </Grid>
         </Grid>
       </form>
