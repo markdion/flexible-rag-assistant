@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Box, Grid } from '@mui/material';
+import { Box, Divider, Grid } from '@mui/material';
 import NavBar from './NavBar';
 import Chat from './Chat';
 import SetupPane from './SetupPane';
 import ContextPane from './ContextPane';
 
-const drawerWidth = 240;
+const drawerWidth = 80;
 
 function Layout(): JSX.Element {
   const [selectedPane, setSelectedPane] = useState(0);
@@ -25,14 +25,15 @@ function Layout(): JSX.Element {
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh', boxSizing: 'border-box' }}>
       <NavBar onSelect={setSelectedPane} />
       <main style={{ flexGrow: 1, marginLeft: drawerWidth }}>
-        <Grid container spacing={2}>
-          <Grid item xs={4}>
+        <Box sx={{ display: 'flex', height: '100%' }}>
+          <Box sx={{ flex: 4 }}>
             {renderLeftPane()}
-          </Grid>
-          <Grid item xs={8}>
+          </Box>
+          <Divider orientation="vertical" flexItem />
+          <Box sx={{ flex: 8 }}>
             <Chat />
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
       </main>
     </Box>
   );
