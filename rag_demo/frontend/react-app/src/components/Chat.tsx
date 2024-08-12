@@ -3,6 +3,9 @@ import axiosInstance from '../api/chatApi';
 import { AxiosResponse } from 'axios';
 import { Box, Grid, IconButton, LinearProgress, Paper, TextField, Typography } from '@mui/material';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 interface Context {
   source: string;
@@ -22,11 +25,14 @@ interface ChatResponse {
   context: Context[];
 }
 
-function Chat(): JSX.Element {
+const Chat: React.FC = () => {
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [prompt, setPrompt] = useState('');
   const [loading, setLoading] = useState(false);
   const chatBoxRef = useRef<HTMLDivElement>(null);
+
+  const apiKey = useSelector((state: RootState) => state.apiKey);
+  const resourceLinks = useSelector((state: RootState) => state.resourceLinks);
 
   useEffect(() => {
     if (chatBoxRef.current) {
@@ -47,7 +53,11 @@ function Chat(): JSX.Element {
     setPrompt('');
 
     // Send chat message to backend
-    axiosInstance.post('/chat', { prompt })
+    axiosInstance.post('/chat', {
+        prompt,
+        apiKey,
+        resourceLinks,
+      })
       .then((response: AxiosResponse<ChatResponse>) => {
         const newResponse: ChatMessage = {
           type: 'AI',
@@ -64,9 +74,27 @@ function Chat(): JSX.Element {
       });
   };
 
+  const handleReset = () => {
+    setChatHistory([]);
+  };
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh', p: 2, boxSizing: 'border-box' }}>
-      <Typography variant="h4" gutterBottom>Chat</Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 2 }}>
+        <Typography variant="h4" gutterBottom>Chat</Typography>
+        <IconButton
+          onClick={handleReset}
+          sx={{
+            width: 56,
+            height: 56,
+            backgroundColor: 'error.main',
+            color: 'primary.contrastText',
+            borderRadius: '10%',
+          }}
+        >
+          <DeleteIcon />
+        </IconButton>
+      </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, minHeight: 0 }}>
         <Paper
           elevation={0}

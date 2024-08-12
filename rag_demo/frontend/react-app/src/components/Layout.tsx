@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Box, Divider, Grid } from '@mui/material';
+import { useState } from 'react';
+import { Box, Divider } from '@mui/material';
 import NavBar from './NavBar';
 import Chat from './Chat';
 import SetupPane from './SetupPane';

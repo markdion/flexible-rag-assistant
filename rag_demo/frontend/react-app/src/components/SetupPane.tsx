@@ -1,6 +1,6 @@
 import { Box, Button, TextField, Typography, IconButton } from '@mui/material';
 import React from 'react';
-import { RootState } from '../store/reducers';
+import { RootState } from '../store/store';
 import { setApiKey, setResourceLinks } from '../store/actions';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';

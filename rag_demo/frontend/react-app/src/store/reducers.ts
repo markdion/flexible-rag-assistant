@@ -34,5 +34,4 @@ const rootReducer = combineReducers({
   resourceLinks: resourceLinksReducer,
 });
 
-export type RootState = ReturnType<typeof rootReducer>;
 export default rootReducer;

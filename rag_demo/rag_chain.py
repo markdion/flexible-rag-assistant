@@ -5,23 +5,21 @@ from langchain.chains import create_history_aware_retriever, create_retrieval_ch
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_openai import ChatOpenAI
+from pydantic import SecretStr
 
 from rag_demo.embeddings import split_and_embed_documents
 from rag_demo.loader import ReaderModeLoader
 
-def get_rag_chain():
+def get_rag_chain(api_key: SecretStr, resource_links: list):
     logging.info("Starting RAG process")
 
     # Load environment variables from .env file
     load_dotenv()
 
-    # Extract the WEB_PATHS variable and split it into a tuple
-    web_paths = tuple(os.getenv('RULES_WEB_PATHS', '').split(','))
-
     # Load, chunk and index the contents of the blog.
     logging.info("Loading documents")
     loader = ReaderModeLoader(
-        web_paths=web_paths,
+        web_paths=resource_links,
     )
     docs = loader.load()
 
@@ -31,7 +29,10 @@ def get_rag_chain():
     
     # Retrieve and generate using the relevant snippets of the sources.
     retriever = vectorstore.as_retriever()
-    llm = ChatOpenAI(model="gpt-4o-mini")
+    llm = ChatOpenAI(
+        model="gpt-4o-mini",
+        api_key=api_key.get_secret_value(),
+    )
 
     # Setup context from chat history and relevant snippets.
     contextualize_q_system_prompt = """Given a chat history and the latest user question \
